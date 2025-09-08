@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Inverter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+        }
+    </style>
+    </head>
+    <body class="bg-white text-black min-h-screen flex flex-col items-center justify-center p-4">
+
+    
+    <div id="app-container" class="bg-gray-800 text-white p-8 rounded-xl shadow-2xl w-full max-w-md text-center border-4 border-gray-700">
+        <h1 id="heading" class="text-3xl sm:text-4xl font-bold mb-6">Color Changer</h1>
+
+        <p id="description" class="text-sm sm:text-base mb-8">
+            Click the button below to change the background color of the page. 
+        </p>
+
+       
+        <div class="space-y-4">
+            <button id="changeColorBtn" class="bg-white text-gray-800 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
+                Change Color
+            </button>
+        </div>
+    </div>
+<div id="message-box" class="fixed top-4 left-1/2 -translate-x-1/2 bg-white text-gray-800 py-3 px-6 rounded-full shadow-lg z-50 transform -translate-y-full transition-transform duration-500 ease-out opacity-0">
+        Color Changed!
+    </div>
+
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const button = document.getElementById('changeColorBtn');
+            const messageBox = document.getElementById('message-box');
+
+           
+            const colors = ['#FF0000', '#000000', '#FFFFFF', '#008000', '#FFFF00'];
+            let currentColorIndex = 0;
+
+            
+            const showMessage = (message) => {
+                messageBox.textContent = message;
+                
+                messageBox.classList.remove('-translate-y-full', 'opacity-0');
+                messageBox.classList.add('translate-y-0', 'opacity-100');
+                
+                setTimeout(() => {
+                    messageBox.classList.remove('translate-y-0', 'opacity-100');
+                    messageBox.classList.add('-translate-y-full', 'opacity-0');
+                }, 2000);
+            };
+
+           
+            const invertColor = (hex) => {
+               
+                const colorValue = parseInt(hex.slice(1), 16);
+
+                
+                const invertedValue = 0xFFFFFF ^ colorValue;
+
+               const invertedHex = '#' + ('000000' + invertedValue.toString(16)).slice(-6);
+
+                return invertedHex;
+            };
+
+            
+            const updateColors = () => {
+                const newBackgroundColor = colors[currentColorIndex];
+                const newTextColor = invertColor(newBackgroundColor);
+
+               
+                body.style.backgroundColor = newBackgroundColor;
+                body.style.color = newTextColor;
+                
+                
+                const invertedNewBackgroundColor = invertColor(newBackgroundColor);
+                document.getElementById('app-container').style.backgroundColor = invertedNewBackgroundColor;
+                document.getElementById('app-container').style.color = newBackgroundColor;
+                document.getElementById('app-container').style.borderColor = newBackgroundColor;
+                button.style.backgroundColor = newBackgroundColor;
+                button.style.color = newTextColor;
+
+               
+                currentColorIndex = (currentColorIndex + 1) % colors.length;
+            };
+
+
+            updateColors();
+
+            
+            button.addEventListener('click', () => {
+                updateColors();
+                showMessage("Color has changed!");
+            });
+        });
+    </script>
+</body>
+</html>
